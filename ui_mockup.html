@@ -1,0 +1,1122 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=Bitter:wght@300;400;600&display=swap');
+
+  :root {
+    --moss: #1B3A2C;
+    --moss-mid: #2D5A42;
+    --moss-light: #4A7C5F;
+    --parch: #F4ECD7;
+    --parch-dark: #E8DBC0;
+    --vermillion: #C8522A;
+    --vermillion-light: #E8795A;
+    --sage: #7BA87A;
+    --sage-light: #A8CCA7;
+    --khaki: #8A7A50;
+    --amber: #D4920A;
+    --text-dark: #1A1A18;
+    --text-mid: #3D3D38;
+    --text-muted: #7A7A72;
+    --card-bg: rgba(244,236,215,0.55);
+    --border: rgba(27,58,44,0.18);
+    --border-strong: rgba(27,58,44,0.35);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  .app-shell {
+    font-family: 'DM Mono', monospace;
+    background: #F0E8D0;
+    background-image:
+      radial-gradient(ellipse at 10% 0%, rgba(123,168,122,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse at 90% 100%, rgba(200,82,42,0.08) 0%, transparent 50%);
+    min-height: 800px;
+    color: var(--text-dark);
+    position: relative;
+  }
+
+  .leaf-decor {
+    position: absolute;
+    top: 0; right: 0;
+    width: 260px; height: 220px;
+    opacity: 0.07;
+    pointer-events: none;
+  }
+
+  .topbar {
+    background: var(--moss);
+    padding: 0 28px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 3px solid var(--vermillion);
+  }
+  .topbar-brand {
+    display: flex; align-items: center; gap: 12px;
+  }
+  .brand-icon {
+    width: 32px; height: 32px;
+    background: var(--sage);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .brand-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px; font-weight: 700;
+    color: var(--parch);
+    letter-spacing: 0.02em;
+  }
+  .brand-sub {
+    font-size: 10px; color: var(--sage-light);
+    letter-spacing: 0.12em; text-transform: uppercase;
+    margin-left: 4px; margin-top: -2px;
+  }
+  .topbar-right {
+    display: flex; align-items: center; gap: 20px;
+  }
+  .topbar-badge {
+    font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--sage-light);
+    border: 1px solid rgba(123,168,122,0.4);
+    padding: 4px 10px; border-radius: 20px;
+  }
+  .topbar-badge.active { color: var(--sage); border-color: var(--sage); }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--sage); display: inline-block; margin-right: 5px; }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 260px 1fr 220px;
+    gap: 0;
+    min-height: calc(800px - 56px);
+  }
+
+  .sidebar {
+    background: var(--moss);
+    padding: 24px 18px;
+    border-right: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .sidebar-section-label {
+    font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--sage-light); opacity: 0.7;
+    margin-bottom: 10px; margin-top: 20px;
+  }
+  .sidebar-section-label:first-child { margin-top: 0; }
+
+  .model-card {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+    position: relative;
+  }
+  .model-card.selected {
+    background: rgba(123,168,122,0.15);
+    border-color: var(--sage);
+  }
+  .model-card.selected::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 8px; bottom: 8px;
+    width: 3px;
+    background: var(--sage);
+    border-radius: 0 3px 3px 0;
+  }
+  .model-name {
+    font-size: 13px; font-weight: 500; color: var(--parch);
+    margin-bottom: 3px;
+  }
+  .model-meta {
+    font-size: 10px; color: rgba(244,236,215,0.45); letter-spacing: 0.04em;
+  }
+  .model-badge {
+    display: inline-block;
+    font-size: 9px; padding: 2px 7px; border-radius: 10px;
+    background: rgba(212,146,10,0.2); color: #E8B840;
+    border: 1px solid rgba(212,146,10,0.3);
+    margin-top: 5px; letter-spacing: 0.06em;
+  }
+  .model-badge.fast { background: rgba(123,168,122,0.2); color: var(--sage); border-color: rgba(123,168,122,0.3); }
+
+  .upload-zone {
+    border: 1.5px dashed rgba(244,236,215,0.2);
+    border-radius: 10px;
+    padding: 22px 16px;
+    text-align: center;
+    cursor: pointer;
+    margin-bottom: 10px;
+  }
+  .upload-icon { font-size: 28px; margin-bottom: 8px; opacity: 0.6; }
+  .upload-text {
+    font-size: 11px; color: rgba(244,236,215,0.5);
+    line-height: 1.6;
+  }
+  .upload-text strong { color: var(--parch); font-weight: 500; }
+
+  .cam-btn {
+    width: 100%;
+    background: rgba(200,82,42,0.12);
+    border: 1px solid rgba(200,82,42,0.3);
+    border-radius: 8px;
+    padding: 9px;
+    color: var(--vermillion-light);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px; letter-spacing: 0.06em;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 7px;
+    margin-bottom: 16px;
+  }
+
+  .analyze-btn {
+    width: 100%;
+    background: var(--vermillion);
+    border: none;
+    border-radius: 8px;
+    padding: 12px;
+    color: white;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px; font-weight: 500;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    cursor: pointer;
+    margin-top: 8px;
+  }
+
+  .sidebar-divider {
+    height: 1px; background: rgba(255,255,255,0.07);
+    margin: 20px 0;
+  }
+
+  .conf-slider-label {
+    display: flex; justify-content: space-between;
+    font-size: 10px; color: rgba(244,236,215,0.45);
+    margin-bottom: 6px;
+  }
+  .conf-slider {
+    width: 100%; accent-color: var(--sage);
+    height: 3px;
+  }
+
+  .main {
+    padding: 24px 28px;
+    background: transparent;
+  }
+
+  .main-header {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    margin-bottom: 22px;
+  }
+  .specimen-id {
+    font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--khaki); margin-bottom: 4px;
+  }
+  .main-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px; font-weight: 700; color: var(--moss);
+    line-height: 1.2;
+  }
+  .status-pill {
+    display: flex; align-items: center; gap: 6px;
+    background: rgba(200,82,42,0.12);
+    border: 1px solid rgba(200,82,42,0.25);
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 11px; color: var(--vermillion);
+    font-weight: 500;
+  }
+  .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--vermillion); }
+  .status-dot.healthy { background: var(--sage); }
+  .status-pill.healthy { background: rgba(123,168,122,0.12); border-color: rgba(123,168,122,0.25); color: #3D7A3C; }
+
+  .image-panel {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .img-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+  }
+  .img-card-label {
+    position: absolute; top: 10px; left: 10px;
+    font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase;
+    background: var(--moss);
+    color: var(--parch);
+    padding: 3px 9px; border-radius: 10px;
+    z-index: 2;
+  }
+  .img-placeholder {
+    height: 190px;
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+  }
+
+  .orig-img-bg {
+    background: linear-gradient(135deg, #2D5A42 0%, #1B3A2C 100%);
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .leaf-svg { opacity: 0.6; }
+
+  .gradcam-bg {
+    background: #0A0A0A;
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+
+  .prediction-bar-section {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-bottom: 16px;
+  }
+  .pred-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 14px;
+  }
+  .pred-title {
+    font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--moss-mid); font-weight: 500;
+  }
+  .pred-model-tag {
+    font-size: 9px; letter-spacing: 0.08em;
+    color: var(--khaki);
+  }
+
+  .pred-item {
+    display: grid;
+    grid-template-columns: 180px 1fr 48px;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .pred-label {
+    font-size: 11px; color: var(--text-mid);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .pred-label em { font-style: italic; color: var(--text-muted); font-size: 10px; }
+  .pred-bar-wrap { height: 8px; background: rgba(27,58,44,0.1); border-radius: 4px; overflow: hidden; }
+  .pred-bar { height: 100%; border-radius: 4px; }
+  .bar-top { background: var(--vermillion); }
+  .bar-2 { background: var(--khaki); }
+  .bar-3 { background: rgba(27,58,44,0.25); }
+  .pred-pct { font-size: 12px; font-weight: 500; color: var(--text-mid); text-align: right; }
+  .pred-pct.top { color: var(--vermillion); }
+
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .stat-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 13px 15px;
+  }
+  .stat-label { font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px; }
+  .stat-value { font-size: 20px; font-weight: 500; color: var(--moss); font-family: 'Playfair Display', serif; }
+  .stat-sub { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+
+  .right-panel {
+    background: var(--parch-dark);
+    border-left: 1px solid var(--border-strong);
+    padding: 20px 16px;
+    overflow-y: auto;
+  }
+
+  .treatment-header {
+    font-family: 'Playfair Display', serif;
+    font-size: 15px; font-weight: 700;
+    color: var(--moss);
+    margin-bottom: 4px;
+  }
+  .treatment-sub {
+    font-size: 10px; color: var(--text-muted);
+    letter-spacing: 0.04em;
+    margin-bottom: 18px;
+  }
+
+  .disease-tag {
+    display: inline-block;
+    background: rgba(200,82,42,0.12);
+    color: var(--vermillion);
+    border: 1px solid rgba(200,82,42,0.25);
+    font-size: 10px; padding: 3px 9px; border-radius: 10px;
+    margin-bottom: 14px;
+    font-weight: 500;
+  }
+
+  .rx-section { margin-bottom: 16px; }
+  .rx-title {
+    font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--khaki); margin-bottom: 8px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .rx-title::after {
+    content: ''; flex: 1; height: 1px; background: var(--border-strong);
+  }
+
+  .rx-item {
+    display: flex; gap: 8px;
+    margin-bottom: 8px;
+    align-items: flex-start;
+  }
+  .rx-icon {
+    width: 20px; height: 20px; border-radius: 5px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; flex-shrink: 0; margin-top: 1px;
+  }
+  .rx-icon.green { background: rgba(123,168,122,0.2); color: #3D7A3C; }
+  .rx-icon.orange { background: rgba(200,82,42,0.15); color: var(--vermillion); }
+  .rx-icon.blue { background: rgba(58,122,180,0.15); color: #2A6DAA; }
+  .rx-text { font-size: 10.5px; color: var(--text-mid); line-height: 1.55; }
+  .rx-text strong { color: var(--text-dark); font-weight: 500; }
+
+  .severity-meter {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-bottom: 14px;
+  }
+  .sev-label { font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; }
+  .sev-bar-wrap { display: flex; gap: 3px; }
+  .sev-seg {
+    flex: 1; height: 6px; border-radius: 3px;
+    background: rgba(27,58,44,0.1);
+  }
+  .sev-seg.filled-green { background: var(--sage); }
+  .sev-seg.filled-amber { background: var(--amber); }
+  .sev-seg.filled-red { background: var(--vermillion); }
+  .sev-text { font-size: 10px; color: var(--vermillion); margin-top: 5px; font-weight: 500; }
+
+  .note-box {
+    background: rgba(212,146,10,0.1);
+    border: 1px solid rgba(212,146,10,0.25);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 10px; color: #7A5A00;
+    line-height: 1.55;
+    margin-top: 14px;
+  }
+
+  .tab-row {
+    display: flex; gap: 0;
+    border-bottom: 1px solid var(--border-strong);
+    margin-bottom: 16px;
+  }
+  .tab {
+    font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 8px 14px;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+  }
+  .tab.active { color: var(--moss); border-color: var(--vermillion); font-weight: 500; }
+
+  .gradcam-legend {
+    position: absolute;
+    bottom: 8px; right: 8px;
+    display: flex; gap: 3px;
+    align-items: center;
+  }
+  .gcl-seg { width: 20px; height: 6px; border-radius: 2px; }
+
+  .powered-by {
+    font-size: 9px; letter-spacing: 0.06em;
+    color: rgba(244,236,215,0.3);
+    padding: 12px 18px;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    margin-top: auto;
+  }
+
+  .layout.intro-mode {
+    grid-template-columns: 260px 1fr;
+  }
+  .layout.intro-mode .right-panel,
+  .welcome-panel.hidden,
+  .analysis-section.hidden,
+  .right-panel.hidden {
+    display: none;
+  }
+  .welcome-panel {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+    min-height: 360px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 14px;
+  }
+  .welcome-kicker {
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--khaki);
+  }
+  .welcome-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--moss);
+    line-height: 1.2;
+  }
+  .welcome-copy {
+    max-width: 620px;
+    font-size: 12px;
+    line-height: 1.8;
+    color: var(--text-mid);
+  }
+  .camera-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 20, 16, 0.72);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 20;
+    padding: 24px;
+  }
+  .camera-modal.active { display: flex; }
+  .camera-panel {
+    width: min(720px, 100%);
+    background: var(--moss);
+    border: 1px solid rgba(244,236,215,0.18);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .camera-feed {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    background: #0A0A0A;
+    display: block;
+    object-fit: cover;
+  }
+  .camera-actions {
+    display: flex;
+    gap: 10px;
+    padding: 12px;
+  }
+  .camera-action {
+    flex: 1;
+    border: 1px solid rgba(244,236,215,0.18);
+    border-radius: 8px;
+    padding: 10px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+  }
+  .camera-action.capture {
+    background: var(--vermillion);
+    color: white;
+    border-color: var(--vermillion);
+  }
+  .camera-action.cancel {
+    background: rgba(255,255,255,0.06);
+    color: var(--parch);
+  }
+</style>
+
+<div class="app-shell">
+  <svg class="leaf-decor" viewBox="0 0 260 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M260 0 C180 60, 80 40, 20 180 C80 100, 200 80, 260 0Z" fill="#1B3A2C"/>
+    <path d="M140 0 C100 80, 30 100, 0 220 C50 140, 120 100, 140 0Z" fill="#2D5A42"/>
+    <line x1="80" y1="30" x2="50" y2="160" stroke="#4A7C5F" stroke-width="1.5"/>
+    <line x1="80" y1="30" x2="100" y2="90" stroke="#4A7C5F" stroke-width="0.8"/>
+    <line x1="80" y1="30" x2="60" y2="100" stroke="#4A7C5F" stroke-width="0.8"/>
+  </svg>
+
+  <div class="topbar">
+    <div class="topbar-brand">
+      <div class="brand-icon">🌿</div>
+      <div>
+        <div class="brand-title">PhytoScan AI</div>
+        <div class="brand-sub">Plant Disease Detection &amp; Management System</div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <span class="topbar-badge"><span class="dot"></span>PlantVillage · 38 Classes</span>
+    </div>
+  </div>
+
+  <div class="layout intro-mode">
+    <div class="sidebar">
+      <div class="sidebar-section-label">Detection Engine</div>
+      <div class="model-card selected">
+        <div class="model-name">ResNet-50</div>
+        <div class="model-meta">Deep Residual Network · 50 layers</div>
+        <div class="model-badge">High Accuracy</div>
+      </div>
+      <div class="model-card">
+        <div class="model-name">MobileNetV2</div>
+        <div class="model-meta">Lightweight · Inverted Residuals</div>
+        <div class="model-badge fast">⚡ Fast</div>
+      </div>
+
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-section-label">Image Input</div>
+
+      <div class="upload-zone">
+        <div class="upload-icon"><i class="ti ti-photo-up" style="color:rgba(244,236,215,0.5);font-size:26px;"></i></div>
+        <div class="upload-text">
+          <strong>Drop specimen image</strong><br>
+          JPG, PNG, WEBP · Max 10MB
+        </div>
+      </div>
+
+      <button class="cam-btn"><i class="ti ti-camera" style="font-size:14px;"></i> Capture via Camera</button>
+
+      <div class="sidebar-section-label">Confidence Threshold</div>
+      <div class="conf-slider-label">
+        <span>Min. confidence</span><span style="color:rgba(244,236,215,0.7)">0.75</span>
+      </div>
+      <input type="range" class="conf-slider" min="0" max="100" value="75">
+
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-section-label">Output Options</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <label style="display:flex;align-items:center;gap:8px;font-size:11px;color:rgba(244,236,215,0.6);cursor:pointer;">
+          <input type="checkbox" checked style="accent-color:var(--sage);"> Show GRAD-CAM heatmap
+        </label>
+        <label style="display:flex;align-items:center;gap:8px;font-size:11px;color:rgba(244,236,215,0.6);cursor:pointer;">
+          <input type="checkbox" checked style="accent-color:var(--sage);"> Top-5 predictions
+        </label>
+        <label style="display:flex;align-items:center;gap:8px;font-size:11px;color:rgba(244,236,215,0.6);cursor:pointer;">
+          <input type="checkbox" checked style="accent-color:var(--sage);"> Treatment guide
+        </label>
+      </div>
+
+      <button class="analyze-btn">Analyse Specimen →</button>
+
+      <div class="powered-by">Powered by TensorFlow · Keras</div>
+    </div>
+
+    <div class="main">
+      <div class="main-header">
+        <div>
+          <div class="specimen-id">Ready for specimen intake</div>
+          <div class="main-title">Plant Disease Detection Workspace</div>
+        </div>
+        <div class="status-pill healthy">
+          <div class="status-dot healthy"></div>
+          Awaiting Image
+        </div>
+      </div>
+
+      <div class="welcome-panel">
+        <div class="welcome-kicker">AI-assisted crop health screening</div>
+        <div class="welcome-title">Upload or capture a leaf image to begin.</div>
+        <div class="welcome-copy">
+          Choose a detection engine, add a clear specimen photo, then run analysis to view confidence scores, visual explanation, and disease-specific management guidance.
+        </div>
+      </div>
+
+      <div class="stats-row analysis-section hidden">
+        <div class="stat-card">
+          <div class="stat-label">Top Confidence</div>
+          <div class="stat-value">94.7%</div>
+          <div class="stat-sub">Early Blight</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Inference Time</div>
+          <div class="stat-value">23ms</div>
+          <div class="stat-sub">ResNet-50</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Classes Evaluated</div>
+          <div class="stat-value">38</div>
+          <div class="stat-sub">PlantVillage</div>
+        </div>
+      </div>
+
+      <div class="image-panel analysis-section hidden">
+        <div class="img-card">
+          <div class="img-card-label">Original Specimen</div>
+          <div class="img-placeholder orig-img-bg">
+            <svg class="leaf-svg" width="120" height="130" viewBox="0 0 120 130">
+              <ellipse cx="60" cy="60" rx="45" ry="52" fill="#3D7A4A" opacity="0.9"/>
+              <path d="M60 15 Q80 40 75 80 Q60 110 45 90 Q30 60 60 15Z" fill="#4A9A5A" opacity="0.7"/>
+              <line x1="60" y1="15" x2="60" y2="108" stroke="#2D5A30" stroke-width="2"/>
+              <line x1="60" y1="40" x2="45" y2="55" stroke="#2D5A30" stroke-width="1.2" opacity="0.8"/>
+              <line x1="60" y1="55" x2="75" y2="68" stroke="#2D5A30" stroke-width="1.2" opacity="0.8"/>
+              <line x1="60" y1="70" x2="44" y2="82" stroke="#2D5A30" stroke-width="1" opacity="0.7"/>
+              <circle cx="48" cy="48" r="7" fill="#8B4513" opacity="0.75"/>
+              <circle cx="67" cy="63" r="5" fill="#6B3410" opacity="0.7"/>
+              <circle cx="52" cy="75" r="4" fill="#8B4513" opacity="0.65"/>
+              <circle cx="73" cy="45" r="6" fill="#7A3C0F" opacity="0.7"/>
+            </svg>
+          </div>
+        </div>
+        <div class="img-card">
+          <div class="img-card-label">GRAD-CAM · last_conv_layer</div>
+          <div class="img-placeholder gradcam-bg">
+            <svg width="160" height="140" viewBox="0 0 160 140">
+              <defs>
+                <radialGradient id="g1" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#FF2200" stop-opacity="0.95"/>
+                  <stop offset="35%" stop-color="#FF8800" stop-opacity="0.8"/>
+                  <stop offset="65%" stop-color="#FFEE00" stop-opacity="0.5"/>
+                  <stop offset="100%" stop-color="#00BBFF" stop-opacity="0.2"/>
+                </radialGradient>
+                <radialGradient id="g2" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#FF5500" stop-opacity="0.8"/>
+                  <stop offset="60%" stop-color="#FFAA00" stop-opacity="0.5"/>
+                  <stop offset="100%" stop-color="transparent"/>
+                </radialGradient>
+                <radialGradient id="g3" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#FF3300" stop-opacity="0.7"/>
+                  <stop offset="70%" stop-color="#FF8800" stop-opacity="0.3"/>
+                  <stop offset="100%" stop-color="transparent"/>
+                </radialGradient>
+              </defs>
+              <ellipse cx="60" cy="60" rx="45" ry="52" fill="#0A2A10" opacity="0.9"/>
+              <ellipse cx="52" cy="50" rx="28" ry="24" fill="url(#g1)"/>
+              <ellipse cx="68" cy="65" rx="20" ry="18" fill="url(#g2)"/>
+              <ellipse cx="48" cy="72" rx="15" ry="12" fill="url(#g3)"/>
+              <ellipse cx="74" cy="46" rx="16" ry="14" fill="url(#g2)" opacity="0.7"/>
+            </svg>
+            <div class="gradcam-legend">
+              <span style="font-size:8px;color:rgba(255,255,255,0.4);margin-right:4px;">Low</span>
+              <div class="gcl-seg" style="background:#00AAFF;"></div>
+              <div class="gcl-seg" style="background:#00EE88;"></div>
+              <div class="gcl-seg" style="background:#FFEE00;"></div>
+              <div class="gcl-seg" style="background:#FF8800;"></div>
+              <div class="gcl-seg" style="background:#FF2200;"></div>
+              <span style="font-size:8px;color:rgba(255,255,255,0.4);margin-left:4px;">High</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="prediction-bar-section analysis-section hidden">
+        <div class="pred-header">
+          <div class="pred-title">Top-5 Prediction Scores</div>
+          <div class="pred-model-tag">Model: ResNet-50 · PlantVillage</div>
+        </div>
+
+        <div class="pred-item">
+          <div class="pred-label">Tomato — <em>Early Blight</em></div>
+          <div class="pred-bar-wrap"><div class="pred-bar bar-top" style="width:94.7%;"></div></div>
+          <div class="pred-pct top">94.7%</div>
+        </div>
+        <div class="pred-item">
+          <div class="pred-label">Tomato — <em>Septoria Leaf Spot</em></div>
+          <div class="pred-bar-wrap"><div class="pred-bar bar-2" style="width:3.1%;"></div></div>
+          <div class="pred-pct">3.1%</div>
+        </div>
+        <div class="pred-item">
+          <div class="pred-label">Tomato — <em>Late Blight</em></div>
+          <div class="pred-bar-wrap"><div class="pred-bar bar-3" style="width:1.4%;"></div></div>
+          <div class="pred-pct">1.4%</div>
+        </div>
+        <div class="pred-item">
+          <div class="pred-label">Tomato — <em>Healthy</em></div>
+          <div class="pred-bar-wrap"><div class="pred-bar bar-3" style="width:0.5%;"></div></div>
+          <div class="pred-pct">0.5%</div>
+        </div>
+        <div class="pred-item">
+          <div class="pred-label">Tomato — <em>Bacterial Spot</em></div>
+          <div class="pred-bar-wrap"><div class="pred-bar bar-3" style="width:0.3%;"></div></div>
+          <div class="pred-pct">0.3%</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="right-panel hidden">
+      <div class="treatment-header">Treatment Guide</div>
+      <div class="treatment-sub">Available after specimen analysis</div>
+    </div>
+  </div>
+</div>
+
+<div class="camera-modal" aria-hidden="true">
+  <div class="camera-panel">
+    <video class="camera-feed" autoplay playsinline></video>
+    <div class="camera-actions">
+      <button type="button" class="camera-action cancel">Cancel</button>
+      <button type="button" class="camera-action capture">Capture Photo</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const $ = (selector, root = document) => root.querySelector(selector);
+  const $$ = (selector, root = document) => Array.from(root.querySelectorAll(selector));
+  const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, (char) => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  }[char]));
+
+  let selectedModel = 'resnet50';
+  let selectedFile = null;
+  let cameraStream = null;
+
+  const layout = $('.layout');
+  const welcomePanel = $('.welcome-panel');
+  const analysisSections = $$('.analysis-section');
+  const uploadZone = $('.upload-zone');
+  const uploadText = $('.upload-text');
+  const analyzeBtn = $('.analyze-btn');
+  const cameraBtn = $('.cam-btn');
+  const confSlider = $('.conf-slider');
+  const confValue = $('.conf-slider-label span:last-child');
+  const originalView = $('.orig-img-bg');
+  const gradcamView = $('.gradcam-bg');
+  const predictionSection = $('.prediction-bar-section');
+  const rightPanel = $('.right-panel');
+  const cameraModal = $('.camera-modal');
+  const cameraVideo = $('.camera-feed');
+  const cameraCaptureBtn = $('.camera-action.capture');
+  const cameraCancelBtn = $('.camera-action.cancel');
+
+  const fileInput = document.createElement('input');
+  fileInput.type = 'file';
+  fileInput.accept = 'image/jpeg,image/png,image/webp';
+  fileInput.style.display = 'none';
+  document.body.appendChild(fileInput);
+
+  const cameraInput = document.createElement('input');
+  cameraInput.type = 'file';
+  cameraInput.accept = 'image/*';
+  cameraInput.capture = 'environment';
+  cameraInput.style.display = 'none';
+  document.body.appendChild(cameraInput);
+
+  function modelIdFromCard(card) {
+    const name = ($('.model-name', card)?.textContent || '').toLowerCase();
+    return name.includes('mobile') ? 'mobilenet_v2' : 'resnet50';
+  }
+
+  $$('.model-card').forEach((card) => {
+    card.dataset.model = modelIdFromCard(card);
+    card.addEventListener('click', () => {
+      selectedModel = card.dataset.model;
+      $$('.model-card').forEach((item) => item.classList.remove('selected'));
+      card.classList.add('selected');
+    });
+  });
+
+  function setUploadLabel(file) {
+    if (!uploadText || !file) return;
+    uploadText.innerHTML = `<strong>${escapeHtml(file.name)}</strong><br>${Math.round(file.size / 1024)} KB selected`;
+  }
+
+  function setImage(container, src, alt) {
+    if (!container || !src) return;
+    container.innerHTML = `<img src="${src}" alt="${escapeHtml(alt)}" style="width:100%;height:100%;object-fit:contain;display:block;">`;
+  }
+
+  function setGradcamImage(src) {
+    if (!gradcamView || !src) return;
+    gradcamView.innerHTML = `
+      <img src="${src}" alt="Grad-CAM heatmap" style="width:100%;height:100%;object-fit:contain;display:block;">
+      <div class="gradcam-legend">
+        <span style="font-size:8px;color:rgba(255,255,255,0.4);margin-right:4px;">Low</span>
+        <div class="gcl-seg" style="background:#00AAFF;"></div>
+        <div class="gcl-seg" style="background:#00EE88;"></div>
+        <div class="gcl-seg" style="background:#FFEE00;"></div>
+        <div class="gcl-seg" style="background:#FF8800;"></div>
+        <div class="gcl-seg" style="background:#FF2200;"></div>
+        <span style="font-size:8px;color:rgba(255,255,255,0.4);margin-left:4px;">High</span>
+      </div>
+    `;
+  }
+
+  function showLocalPreview(file) {
+    const reader = new FileReader();
+    reader.onload = () => setImage(originalView, reader.result, 'Selected specimen');
+    reader.readAsDataURL(file);
+  }
+
+  function handleFile(file) {
+    if (!file) return;
+    selectedFile = file;
+    setUploadLabel(file);
+    showLocalPreview(file);
+  }
+
+  function stopCamera() {
+    if (cameraStream) {
+      cameraStream.getTracks().forEach((track) => track.stop());
+      cameraStream = null;
+    }
+    if (cameraVideo) cameraVideo.srcObject = null;
+    cameraModal?.classList.remove('active');
+    cameraModal?.setAttribute('aria-hidden', 'true');
+  }
+
+  async function openCamera() {
+    if (!navigator.mediaDevices?.getUserMedia) {
+      cameraInput.click();
+      return;
+    }
+
+    try {
+      cameraStream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: { ideal: 'environment' } },
+        audio: false
+      });
+      cameraVideo.srcObject = cameraStream;
+      cameraModal?.classList.add('active');
+      cameraModal?.setAttribute('aria-hidden', 'false');
+      await cameraVideo.play();
+    } catch (error) {
+      cameraInput.click();
+    }
+  }
+
+  function captureCameraFrame() {
+    if (!cameraVideo || !cameraVideo.videoWidth || !cameraVideo.videoHeight) return;
+
+    const canvas = document.createElement('canvas');
+    canvas.width = cameraVideo.videoWidth;
+    canvas.height = cameraVideo.videoHeight;
+    canvas.getContext('2d').drawImage(cameraVideo, 0, 0, canvas.width, canvas.height);
+
+    canvas.toBlob((blob) => {
+      if (!blob) return;
+      const file = new File([blob], `camera-specimen-${Date.now()}.jpg`, { type: 'image/jpeg' });
+      handleFile(file);
+      stopCamera();
+    }, 'image/jpeg', 0.92);
+  }
+
+  fileInput.addEventListener('change', () => handleFile(fileInput.files[0]));
+  cameraInput.addEventListener('change', () => handleFile(cameraInput.files[0]));
+  uploadZone?.addEventListener('click', () => fileInput.click());
+  cameraBtn?.addEventListener('click', openCamera);
+  cameraCaptureBtn?.addEventListener('click', captureCameraFrame);
+  cameraCancelBtn?.addEventListener('click', stopCamera);
+  cameraModal?.addEventListener('click', (event) => {
+    if (event.target === cameraModal) stopCamera();
+  });
+
+  uploadZone?.addEventListener('dragover', (event) => {
+    event.preventDefault();
+  });
+  uploadZone?.addEventListener('drop', (event) => {
+    event.preventDefault();
+    handleFile(event.dataTransfer.files[0]);
+  });
+
+  confSlider?.addEventListener('input', () => {
+    if (confValue) confValue.textContent = (Number(confSlider.value) / 100).toFixed(2);
+  });
+
+  function optionChecked(labelText) {
+    const label = $$('label').find((item) => item.textContent.toLowerCase().includes(labelText));
+    const input = label?.querySelector('input[type="checkbox"]');
+    return input ? input.checked : true;
+  }
+
+  function updateStatus(status) {
+    const pill = $('.status-pill');
+    if (!pill) return;
+    pill.classList.toggle('healthy', Boolean(status.healthy));
+    pill.innerHTML = `<div class="status-dot${status.healthy ? ' healthy' : ''}"></div>${escapeHtml(status.label)}`;
+  }
+
+  function updateStats(data) {
+    const cards = $$('.stat-card');
+    if (cards[0]) {
+      $('.stat-value', cards[0]).textContent = `${data.top_prediction.confidence.toFixed(1)}%`;
+      $('.stat-sub', cards[0]).textContent = data.top_prediction.disease;
+    }
+    if (cards[1]) {
+      $('.stat-value', cards[1]).textContent = `${data.inference_ms}ms`;
+      $('.stat-sub', cards[1]).textContent = data.model.name;
+    }
+    if (cards[2]) {
+      $('.stat-value', cards[2]).textContent = data.model.num_classes;
+      $('.stat-sub', cards[2]).textContent = 'PlantVillage';
+    }
+  }
+
+  function updatePredictions(data) {
+    if (!predictionSection) return;
+    $('.pred-model-tag', predictionSection).textContent = `Model: ${data.model.name} - PlantVillage`;
+    $$('.pred-item', predictionSection).forEach((item) => item.remove());
+
+    data.top_predictions.forEach((prediction) => {
+      const item = document.createElement('div');
+      item.className = 'pred-item';
+
+      const label = document.createElement('div');
+      label.className = 'pred-label';
+      label.innerHTML = `${escapeHtml(prediction.plant)} - <em>${escapeHtml(prediction.disease)}</em>`;
+
+      const wrap = document.createElement('div');
+      wrap.className = 'pred-bar-wrap';
+      const bar = document.createElement('div');
+      bar.className = `pred-bar ${prediction.rank === 1 ? 'bar-top' : prediction.rank === 2 ? 'bar-2' : 'bar-3'}`;
+      bar.style.width = `${Math.max(0.5, Math.min(100, prediction.confidence))}%`;
+      wrap.appendChild(bar);
+
+      const pct = document.createElement('div');
+      pct.className = `pred-pct${prediction.rank === 1 ? ' top' : ''}`;
+      pct.textContent = `${prediction.confidence.toFixed(1)}%`;
+
+      item.append(label, wrap, pct);
+      predictionSection.appendChild(item);
+    });
+  }
+
+  function severitySegmentClass(index, level) {
+    if (index > level) return '';
+    if (index <= 2) return 'filled-green';
+    if (index <= 4) return 'filled-amber';
+    return 'filled-red';
+  }
+
+  function leadText(text) {
+    const value = String(text ?? '');
+    const parts = value.split(/\s+[—-]\s+/);
+    if (parts.length > 1) {
+      return `<strong>${escapeHtml(parts.shift())}</strong> - ${escapeHtml(parts.join(' - '))}`;
+    }
+    const firstSentence = value.match(/^(.{8,70}?[.!?])\s+(.+)$/);
+    if (firstSentence) {
+      return `<strong>${escapeHtml(firstSentence[1])}</strong> ${escapeHtml(firstSentence[2])}`;
+    }
+    return escapeHtml(value);
+  }
+
+  function rxSection(title, items, color, iconClass) {
+    const rows = (items || []).map((item) => `
+      <div class="rx-item">
+        <div class="rx-icon ${color}"><i class="${iconClass}" style="font-size:11px;"></i></div>
+        <div class="rx-text">${leadText(item)}</div>
+      </div>
+    `).join('');
+    return `
+      <div class="rx-section">
+        <div class="rx-title">${escapeHtml(title)}</div>
+        ${rows}
+      </div>
+    `;
+  }
+
+  function updateTreatment(treatment) {
+    if (!rightPanel || !treatment) return;
+    const level = Number(treatment.severity?.level || 0);
+    const segments = Array.from({ length: 7 }, (_, index) => {
+      const className = severitySegmentClass(index + 1, level);
+      return `<div class="sev-seg ${className}"></div>`;
+    }).join('');
+
+    rightPanel.innerHTML = `
+      <div class="treatment-header">Treatment Guide</div>
+      <div class="treatment-sub">AI-generated management protocol</div>
+
+      <div class="disease-tag">${escapeHtml(treatment.pathogen || treatment.disease_name)}</div>
+
+      <div class="severity-meter">
+        <div class="sev-label">Estimated Severity</div>
+        <div class="sev-bar-wrap">${segments}</div>
+        <div class="sev-text">${escapeHtml(treatment.severity?.label || 'Unknown')}</div>
+      </div>
+
+      ${rxSection('Immediate Action', treatment.treatment?.immediate_actions, 'orange', 'ti ti-scissors')}
+      ${rxSection('Chemical Treatment', treatment.treatment?.chemical_treatment, 'blue', 'ti ti-flask')}
+      ${rxSection('Cultural Practices', treatment.treatment?.cultural_practices, 'green', 'ti ti-plant')}
+
+      <div class="note-box">
+        Consult a local agronomist before applying chemical treatments. Dosage may vary by region and regulations.
+      </div>
+    `;
+  }
+
+  function updateFromPrediction(data) {
+    layout?.classList.remove('intro-mode');
+    welcomePanel?.classList.add('hidden');
+    analysisSections.forEach((section) => section.classList.remove('hidden'));
+
+    $('.specimen-id').textContent = `Specimen #${data.specimen_id} - ${data.model.name} - ${data.inference_ms}ms inference`;
+    $('.main-title').textContent = data.top_prediction.label;
+    updateStatus(data.status);
+    updateStats(data);
+    setImage(originalView, data.image, 'Original specimen');
+
+    if (predictionSection) predictionSection.classList.toggle('hidden', !optionChecked('top-5'));
+    if (rightPanel) rightPanel.classList.toggle('hidden', !optionChecked('treatment'));
+
+    if (optionChecked('grad-cam')) {
+      if (data.gradcam) {
+        setGradcamImage(data.gradcam);
+      } else {
+        gradcamView.innerHTML = `<div style="font-size:10px;color:rgba(255,255,255,0.55);padding:20px;text-align:center;">Grad-CAM unavailable</div>`;
+      }
+    } else {
+      gradcamView.innerHTML = `<div style="font-size:10px;color:rgba(255,255,255,0.55);padding:20px;text-align:center;">Grad-CAM disabled</div>`;
+    }
+
+    if (optionChecked('top-5')) updatePredictions(data);
+    if (optionChecked('treatment')) updateTreatment(data.treatment);
+  }
+
+  async function analyze() {
+    if (!selectedFile) {
+      uploadText.innerHTML = '<strong>Select a specimen image first</strong><br>JPG, PNG, WEBP - Max 10MB';
+      return;
+    }
+
+    const form = new FormData();
+    form.append('file', selectedFile);
+    form.append('model_name', selectedModel);
+    form.append('confidence_threshold', String(Number(confSlider?.value || 75) / 100));
+    form.append('include_gradcam', String(optionChecked('grad-cam')));
+
+    analyzeBtn.disabled = true;
+    const previousText = analyzeBtn.textContent;
+    analyzeBtn.textContent = 'Analyzing specimen...';
+
+    try {
+      const response = await fetch('/api/predict', { method: 'POST', body: form });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.detail || 'Prediction failed.');
+      updateFromPrediction(data);
+    } catch (error) {
+      uploadText.innerHTML = `<strong>Analysis failed</strong><br>${escapeHtml(error.message)}`;
+    } finally {
+      analyzeBtn.disabled = false;
+      analyzeBtn.textContent = previousText;
+    }
+  }
+
+  analyzeBtn?.addEventListener('click', analyze);
+
+  fetch('/api/models')
+    .then((response) => response.ok ? response.json() : null)
+    .then((data) => {
+      if (!data?.models) return;
+      data.models.forEach((model) => {
+        const card = $(`.model-card[data-model="${model.id}"]`);
+        if (!card) return;
+        const meta = $('.model-meta', card);
+        if (meta) meta.textContent = `${model.num_classes} classes - ${model.best_val_acc.toFixed(2)}% val acc`;
+      });
+    })
+    .catch(() => {});
+})();
+</script>

@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+venv/
+.env
+.env.*
+
+# IDE / OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Logs and temporary files
+*.log
+tmp/
+temp/
+
+# Python test/cache folders
+.pytest_cache/
+.mypy_cache/
+
+# Ignore training checkpoints
+Saved Models/**/Checkpoints/
+Saved Models/**/*.pth
+
+# Keep metadata and deployable scripted models
+!Saved Models/models_metadata.json
+!Saved Models/**/*.pt
