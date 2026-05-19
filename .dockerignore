@@ -5,4 +5,3 @@ __pycache__/
 .pytest_cache/
 _syllabus_pages/
 Saved Models/**/Checkpoints/
-Saved Models/**/*.pth
